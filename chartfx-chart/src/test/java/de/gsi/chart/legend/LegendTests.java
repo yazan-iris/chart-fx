@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
@@ -158,36 +160,42 @@ public class LegendTests {
 
         legend.getItems().clear();
         assertTrue(legend.getItems().isEmpty());
-        legend.updateLegend(List.of(testDataSet), List.of(testRenderer), false);
+        legend.updateLegend(Collections.singletonList(testDataSet), Collections.singletonList(testRenderer), false);
         assertFalse(legend.getItems().isEmpty());
         assertEquals("sine", legend.getItems().get(0).getText());
         assertTrue(legend.getItems().get(0).getSymbol() instanceof Canvas);
 
-        legend.updateLegend(List.of(testDataSet, testDataSet), List.of(testRenderer), false);
+        final List<DataSet> dataSetList = new ArrayList<>();
+        dataSetList.add(testDataSet);
+        dataSetList.add(testDataSet);
+        legend.updateLegend(dataSetList, Collections.singletonList(testRenderer), false);
         assertEquals(1, legend.getItems().size());
 
-        legend.updateLegend(List.of(testDataSet), List.of(testRenderer, testRenderer), false);
+        final List<Renderer> rendererList = new ArrayList<>();
+        rendererList.add(testRenderer);
+        rendererList.add(testRenderer);
+        legend.updateLegend(Collections.singletonList(testDataSet), rendererList, false);
         assertEquals(1, legend.getItems().size());
 
         testDataSet.setStyle(XYChartCss.DATASET_SHOW_IN_LEGEND + "=false;");
-        legend.updateLegend(List.of(testDataSet), List.of(testRenderer), true);
+        legend.updateLegend(Collections.singletonList(testDataSet), Collections.singletonList(testRenderer), true);
         assertEquals(0, legend.getItems().size());
         testDataSet.setStyle(XYChartCss.DATASET_SHOW_IN_LEGEND + "=true;");
-        legend.updateLegend(List.of(testDataSet), List.of(testRenderer), true);
+        legend.updateLegend(Collections.singletonList(testDataSet), Collections.singletonList(testRenderer), true);
         assertEquals(1, legend.getItems().size());
 
-        legend.updateLegend(List.of(testDataSet), Collections.emptyList(), true);
+        legend.updateLegend(Collections.singletonList(testDataSet), Collections.emptyList(), true);
         assertEquals(0, legend.getItems().size());
 
         testRenderer.setShowInLegend(false);
-        legend.updateLegend(List.of(testDataSet), List.of(testRenderer), true);
+        legend.updateLegend(Collections.singletonList(testDataSet), Collections.singletonList(testRenderer), true);
         assertEquals(0, legend.getItems().size());
 
         testRenderer.setShowInLegend(true);
-        legend.updateLegend(List.of(testDataSet), List.of(testRenderer), true);
+        legend.updateLegend(Collections.singletonList(testDataSet), Collections.singletonList(testRenderer), true);
         assertEquals(1, legend.getItems().size());
 
-        legend.updateLegend(List.of(testDataSetAlt), List.of(testRenderer), false);
+        legend.updateLegend(Collections.singletonList(testDataSetAlt), Collections.singletonList(testRenderer), false);
         assertEquals(2, legend.getItems().size());
     }
 

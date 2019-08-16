@@ -15,7 +15,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -68,6 +70,9 @@ public class DataSetUtilsTest {
     @ParameterizedTest(name = "binary: {0}, float: {1}")
     @CsvSource({ "false, false", "false, true", "true, false", "true, true" })
     public void serializeAndDeserializeDefaultDataSet(boolean binary, boolean useFloat) {
+        final Map<String, String> map1 = new HashMap<>();
+        map1.put("test", "asdf");
+        map1.put("testval", "5.24532");
         // initialize dataSet
         DataSet dataSet = new DataSetBuilder() //
                                   .setName("TestSerialize") //
@@ -78,7 +83,7 @@ public class DataSetUtilsTest {
                                   .setAxisUnit(DIM_X, "") //
                                   .setAxisName(DIM_Y, "Voltage")
                                   .setAxisUnit(DIM_Y, "V") //
-                                  .setMetaInfoMap(Map.of("test", "asdf", "testval", "5.24532")) //
+                                  .setMetaInfoMap(map1) //
                                   .setMetaWarningList("testWarning") //
                                   .setMetaInfoList("testInfo") //
                                   .setMetaErrorList("testError") //
@@ -133,6 +138,9 @@ public class DataSetUtilsTest {
     public void
     readAndWriteDefaultDataSetToFile(boolean binary, String filename, @TempDir Path tmpdir) {
         // initialize dataSet
+        final Map<String, String> map1 = new HashMap<>();
+        map1.put("test", "asdf");
+        map1.put("testval", "5.24532");
         DataSet dataSet = new DataSetBuilder() //
                                   .setName("TestSerialize") //
                                   .setValuesNoCopy(DIM_X, new double[] { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f }) //
@@ -141,7 +149,7 @@ public class DataSetUtilsTest {
                                   .setAxisUnit(DIM_X, "") //
                                   .setAxisName(DIM_Y, "Voltage")
                                   .setAxisUnit(DIM_Y, "V") //
-                                  .setMetaInfoMap(Map.of("test", "asdf", "testval", "5.24532")) //
+                .setMetaInfoMap(map1) //
                                   .setMetaWarningList("testWarning") //
                                   .setMetaInfoList("testInfo") //
                                   .setMetaErrorList("testError") //
@@ -178,9 +186,9 @@ public class DataSetUtilsTest {
         assertThrows(IllegalArgumentException.class,
                 () -> DataSetUtils.writeDataSetToFile(new DefaultDataSet("test"), null, null));
         assertThrows(IllegalArgumentException.class,
-                () -> DataSetUtils.writeDataSetToFile(new DefaultDataSet("test"), Path.of("/tmp"), ""));
+                () -> DataSetUtils.writeDataSetToFile(new DefaultDataSet("test"), Paths.get("/tmp"), ""));
         assertThrows(IllegalArgumentException.class,
-                () -> DataSetUtils.writeDataSetToFile(new DefaultDataSet("test"), Path.of("/tmp"), null));
+                () -> DataSetUtils.writeDataSetToFile(new DefaultDataSet("test"), Paths.get("/tmp"), null));
     }
 
     @Test
@@ -257,11 +265,16 @@ public class DataSetUtilsTest {
     @Test
     public void testGenerateFileName() {
         final long acqStamp = System.currentTimeMillis();
+        final Map<String, String> map1 = new HashMap<>();
+        map1.put("metaInt", "1337");
+        map1.put("metaString", "testMetaInfo");
+        map1.put("metaDouble", "1.337");
+        map1.put("metaEng", "1.33e-7");
+        map1.put("acqStamp", Long.toString(acqStamp));
         final DataSet dataSet = new DataSetBuilder("dsName") //
                                         .setValuesNoCopy(DIM_X, new double[] { 1, 2, 3 }) //
                                         .setValuesNoCopy(DIM_Y, new double[] { 9, 7, 8 }) //
-                                        .setMetaInfoMap(Map.of("metaInt", "1337", "metaString", "testMetaInfo", "metaDouble", "1.337",
-                                                "metaEng", "1.33e-7", "acqStamp", Long.toString(acqStamp)))
+                                        .setMetaInfoMap(map1)
                                         .build();
         assertEquals("file.bin.gz", DataSetUtils.getFileName(dataSet, "file.bin.gz"));
         assertEquals("file_metaDataFieldMissing.bin.gz", DataSetUtils.getFileName(dataSet, "file_{}.bin.gz"));

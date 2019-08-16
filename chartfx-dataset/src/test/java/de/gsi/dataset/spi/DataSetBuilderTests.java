@@ -11,8 +11,10 @@ import static de.gsi.dataset.DataSet.DIM_X;
 import static de.gsi.dataset.DataSet.DIM_Y;
 import static de.gsi.dataset.DataSet.DIM_Z;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -35,6 +37,9 @@ import de.gsi.dataset.locks.DataSetLock;
 public class DataSetBuilderTests {
     @Test
     public void testYErrorDataSet() {
+        Map<String, String> map1 = new HashMap<>();
+        map1.put("someParameter", "5");
+        
         final DataSet dataset = new DataSetBuilder() //
                                         .setName("testdataset") //
                                         .setValues(DIM_X, new float[] { 1f, 2f, 3f }) //
@@ -49,7 +54,7 @@ public class DataSetBuilderTests {
                                         .setMetaErrorList(new String[] { "no connection to device", "error reading config" })
                                         .setMetaInfoList(new String[0])
                                         .setMetaWarningList(new String[] { "overrange" })
-                                        .setMetaInfoMap(Map.of("someParameter", "5"))
+                                        .setMetaInfoMap(map1)
                                         .build();
         assertEquals("testdataset", dataset.getName());
         assertEquals(3, dataset.getDataCount());
@@ -72,7 +77,7 @@ public class DataSetBuilderTests {
         assertEquals("error reading config", metaDataSet.getErrorList().get(1));
         assertEquals("overrange", metaDataSet.getWarningList().get(0));
         assertEquals(0, metaDataSet.getInfoList().size());
-        assertEquals(Map.of("someParameter", "5"), metaDataSet.getMetaInfo());
+        assertEquals(map1, metaDataSet.getMetaInfo());
         assertEquals("awesomeness", dataset.getAxisDescription(DIM_Y).getName());
         assertEquals("%", dataset.getAxisDescription(DIM_X).getUnit());
         assertEquals(-2, dataset.getAxisDescription(DIM_Y).getMin());
@@ -234,6 +239,14 @@ public class DataSetBuilderTests {
 
     @Test
     public void testNoErrorDataSet() {
+        Map<Integer, String> map1 = new HashMap<>();
+        map1.put(1, "foo");
+        map1.put(1, "bar");
+        
+        Map<Integer, String> map2 = new HashMap<>();
+        map2.put(2, "color:red");
+        map2.put(2, "bar");
+        
         final DataSetBuilder dataSetBuilder = new DataSetBuilder("testdataset");
         dataSetBuilder.setValuesNoCopy(DIM_X, new double[] { 1, 2, 3 }) //
                 .setValuesNoCopy(DIM_Y, new double[] { 1.337, 23.42, 0.0 }) //
@@ -241,8 +254,8 @@ public class DataSetBuilderTests {
                 .setAxisUnit(DIM_X, "%") //
                 .setAxisName(DIM_Y, "awesomeness") //
                 .setAxisUnit(DIM_Y, "norris") //
-                .setDataLabelMap(Map.of(1, "foo", 2, "bar")) //
-                .setDataStyleMap(Map.of(0, "color:red", 2, "bar"));
+                .setDataLabelMap(map1) //
+                .setDataStyleMap(map2);
         final DataSet dataset = dataSetBuilder.build();
         assertEquals("testdataset", dataset.getName());
         assertArrayEquals(new double[] { 1, 2, 3 }, dataset.getValues(DIM_X));
@@ -402,19 +415,27 @@ public class DataSetBuilderTests {
     @Test
     public void testHelperFunctions() {
         assertDoesNotThrow(() -> {
+            final Map<String, String> map1 = new HashMap<>();
+            map1.put("key", "value");
             final DataSetBuilder builder = new DataSetBuilder("foo");
             DataSet test0 = new MinimalDataSet();
             builder.addMetaData(test0);
-            builder.setMetaErrorList("foo").setMetaInfoList("asdf", "qwert").setMetaWarningList("123", "321").setMetaInfoMap(Map.of("key", "value"));
+            builder.setMetaErrorList("foo").setMetaInfoList("asdf", "qwert").setMetaWarningList("123", "321")
+                    .setMetaInfoMap(map1);
             DoubleErrorDataSet test1 = new DoubleErrorDataSet("test");
             builder.addMetaData(test1);
             builder.addMetaData(test0);
         });
         assertDoesNotThrow(() -> {
+            final Map<Integer, String> map1 = new HashMap<>();
+            map1.put(1, "color:red");
+            final Map<Integer, String> map2 = new HashMap<>();
+            map1.put(1, "test");
+            map1.put(2, "label");
             final DataSetBuilder builder = new DataSetBuilder("foo");
             DataSet test0 = new MinimalDataSet();
             builder.addDataLabelStyleMap(test0);
-            builder.setDataLabelMap(Map.of(1, "test", 2, "label")).setDataStyleMap(Map.of(1, "color:red"));
+            builder.setDataLabelMap(map1).setDataStyleMap(map2);
             DoubleErrorDataSet test1 = new DoubleErrorDataSet("test", 2);
             builder.addDataLabelStyleMap(test1);
             builder.addDataLabelStyleMap(test0);
@@ -445,7 +466,7 @@ public class DataSetBuilderTests {
 
         @Override
         public List<AxisDescription> getAxisDescriptions() {
-            return List.of(new DefaultAxisDescription(this, "x Axis", "", 0.0, 9.0),
+            return Arrays.asList(new DefaultAxisDescription(this, "x Axis", "", 0.0, 9.0),
                     new DefaultAxisDescription(this, "y Axis", "", 0.0, 90.0));
         }
 

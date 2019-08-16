@@ -1,40 +1,42 @@
 package de.gsi.chart.utils;
 
-import static de.gsi.chart.utils.WriteFxImageBenchmark.Implementation.NEWREF;
-import static de.gsi.chart.utils.WriteFxImageBenchmark.Implementation.OLDREF;
-import static de.gsi.chart.utils.WriteFxImageBenchmark.Implementation.PALETTE;
-
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.zip.Deflater;
-
-import javax.imageio.ImageIO;
-
-import javafx.application.Platform;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.image.PixelBuffer;
-import javafx.scene.image.PixelFormat;
-import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import ar.com.hjg.pngj.FilterType;
-
+/*
+ * import static de.gsi.chart.utils.WriteFxImageBenchmark.Implementation.NEWREF;
+ * import static de.gsi.chart.utils.WriteFxImageBenchmark.Implementation.OLDREF;
+ * import static de.gsi.chart.utils.WriteFxImageBenchmark.Implementation.PALETTE;
+ * 
+ * import java.awt.image.BufferedImage;
+ * import java.io.ByteArrayOutputStream;
+ * import java.io.IOException;
+ * import java.nio.ByteBuffer;
+ * import java.util.Random;
+ * import java.util.concurrent.atomic.AtomicBoolean;
+ * import java.util.zip.Deflater;
+ * 
+ * import javax.imageio.ImageIO;
+ * 
+ * import javafx.application.Platform;
+ * import javafx.embed.swing.SwingFXUtils;
+ * import javafx.scene.canvas.Canvas;
+ * import javafx.scene.canvas.GraphicsContext;
+ * import javafx.scene.image.Image;
+ * //import javafx.scene.image.PixelBuffer; // not available in JDK8
+ * import javafx.scene.image.PixelFormat;
+ * import javafx.scene.image.WritableImage;
+ * import javafx.scene.paint.Color;
+ * 
+ * import org.slf4j.Logger;
+ * import org.slf4j.LoggerFactory;
+ * 
+ * import ar.com.hjg.pngj.FilterType;
+ */
 /**
  * Checking the performance of writing a PNG image from a JavaFx Image
  * 
  * @author Alexander Krimm
  */
 public class WriteFxImageBenchmark {
+    /*
     private static final Logger LOGGER = LoggerFactory.getLogger(WriteFxImageBenchmark.class);
     private static final int DEFAULT_PALETTE_COLOR_COUNT = 8;
     private static final int N_ITER = 50;
@@ -42,7 +44,7 @@ public class WriteFxImageBenchmark {
     private static final int w = 333;
     private static final int h = 777;
     private static ByteBuffer noisePixels;
-    private static PixelBuffer<ByteBuffer> noiseBuffer;
+//    private static PixelBuffer<ByteBuffer> noiseBuffer; // not available in JDK8
     private static WritableImage testimage; // test image with noise (N.B. hard to compress)
     private static final int w2 = 777;
     private static final int h2 = 333;
@@ -222,4 +224,5 @@ public class WriteFxImageBenchmark {
             }
         }
     }
+    */
 }

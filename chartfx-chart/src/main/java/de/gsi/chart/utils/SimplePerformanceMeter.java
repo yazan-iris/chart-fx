@@ -137,7 +137,8 @@ public class SimplePerformanceMeter {
 
     public void deregisterListener() {
         animationTimer.stop();
-        scene.removePostLayoutPulseListener(pulseListener);
+        // only available for Java9+
+        // scene.removePostLayoutPulseListener(pulseListener);
         timer.cancel();
     }
 
@@ -233,7 +234,8 @@ public class SimplePerformanceMeter {
                 FXUtils.runFX(SimplePerformanceMeter.this::updateProperties);
             }
         }, 0, updateDuration);
-        scene.addPostLayoutPulseListener(pulseListener);
+        // available since java 9+
+        //scene.addPostLayoutPulseListener(pulseListener);
     }
 
     public void resetAverages() {

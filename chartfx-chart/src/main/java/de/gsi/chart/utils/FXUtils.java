@@ -16,6 +16,8 @@ import javafx.scene.Scene;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.javafx.tk.TKPulseListener;
+
 /**
  * Small tool to execute/call JavaFX GUI-related code from potentially non-JavaFX thread (equivalent to old:
  * SwingUtilities.invokeLater(...) ... invokeAndWait(...) tools)
@@ -139,7 +141,8 @@ public final class FXUtils {
     public static boolean waitForFxTicks(final Scene scene, final int nTicks, final long timeoutMillis) { // NOPMD
         if (Platform.isFxApplicationThread()) {
             for (int i = 0; i < nTicks; i++) {
-                Platform.requestNextPulse();
+                //Platform.requestNextPulse();
+                scene.getRoot().requestLayout();
             }
             return true;
         }
@@ -149,7 +152,7 @@ public final class FXUtils {
         final Lock lock = new ReentrantLock();
         final Condition condition = lock.newCondition();
 
-        final Runnable tickListener = () -> {
+        final TKPulseListener tickListener = () -> {
             if (tickCount.incrementAndGet() >= nTicks) {
                 lock.lock();
                 try {
@@ -160,19 +163,22 @@ public final class FXUtils {
                     lock.unlock();
                 }
             }
-            Platform.requestNextPulse();
+            //Platform.requestNextPulse();
+            com.sun.javafx.tk.Toolkit.getToolkit().requestNextPulse();
         };
 
         lock.lock();
         try {
-            FXUtils.runAndWait(() -> scene.addPostLayoutPulseListener(tickListener));
+            FXUtils.runAndWait(() -> com.sun.javafx.tk.Toolkit.getToolkit().addSceneTkPulseListener(tickListener));
+//          FXUtils.runAndWait(() -> scene.addPostLayoutPulseListener(tickListener));
         } catch (final Exception e) {
             // cannot occur: tickListener is always non-null and
             // addPostLayoutPulseListener through 'runaAndWait' always executed in JavaFX thread
             LOGGER.atError().setCause(e).log("addPostLayoutPulseListener interrupted");
         }
         try {
-            Platform.requestNextPulse();
+            //Platform.requestNextPulse();
+            com.sun.javafx.tk.Toolkit.getToolkit().requestNextPulse();
             if (timeoutMillis > 0) {
                 timer.schedule(new TimerTask() {
                     @Override
@@ -199,7 +205,9 @@ public final class FXUtils {
             timer.cancel();
         }
         try {
-            FXUtils.runAndWait(() -> scene.removePostLayoutPulseListener(tickListener));
+            FXUtils.runAndWait(
+                    () -> com.sun.javafx.tk.Toolkit.getToolkit().removeSceneTkPulseListener(tickListener));
+            //FXUtils.runAndWait(() -> scene.removePostLayoutPulseListener(tickListener));
         } catch (final Exception e) {
             // cannot occur: tickListener is always non-null and
             // removePostLayoutPulseListener through 'runaAndWait' always executed in JavaFX thread

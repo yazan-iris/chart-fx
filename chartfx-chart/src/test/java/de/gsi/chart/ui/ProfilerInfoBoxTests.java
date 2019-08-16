@@ -6,6 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+
+import javafx.event.ActionEvent;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.Pane;
@@ -14,6 +19,7 @@ import javafx.stage.Stage;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.testfx.api.FxAssert;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
@@ -55,19 +61,29 @@ public class ProfilerInfoBoxTests {
         assertEquals("ProfilerInfoBox-treeRoot", infoBox.getSelectedCrumb().getValue().getId());
 
         robot.interrupt();
-        robot.clickOn("#ProfilerInfoBox-treeRoot");
+        // robot.clickOn("#ProfilerInfoBox-treeRoot"); // does not work, manually click button
+        robot.interact(
+                () -> ((ProfilerInfoBox.CustomBreadCrumbButton) robot.lookup("#ProfilerInfoBox-treeRoot").query())
+                        .getOnAction().handle(new ActionEvent()));
         assertEquals("ProfilerInfoBox-fpsItem", infoBox.getSelectedCrumb().getValue().getId());
 
         robot.interrupt();
-        robot.clickOn("#ProfilerInfoBox-fpsItem");
+        // robot.clickOn("#ProfilerInfoBox-fpsItem"); // does not work, manually click button
+        robot.interact(() -> ((ProfilerInfoBox.CustomBreadCrumbButton) robot.lookup("#ProfilerInfoBox-fpsItem").query())
+                .getOnAction().handle(new ActionEvent()));
         assertEquals("ProfilerInfoBox-cpuItem", infoBox.getSelectedCrumb().getValue().getId());
 
         robot.interrupt();
-        robot.clickOn("#ProfilerInfoBox-cpuItem");
+        // robot.clickOn("#ProfilerInfoBox-cpuItem"); // does not work, manually click button
+        robot.interact(() -> ((ProfilerInfoBox.CustomBreadCrumbButton) robot.lookup("#ProfilerInfoBox-cpuItem").query())
+                .getOnAction().handle(new ActionEvent()));
         assertEquals("ProfilerInfoBox-versionItem", infoBox.getSelectedCrumb().getValue().getId());
 
         robot.interrupt();
-        robot.clickOn("#ProfilerInfoBox-versionItem");
+        // robot.clickOn("#ProfilerInfoBox-versionItem"); // does not work, manually click button
+        robot.interact(
+                () -> ((ProfilerInfoBox.CustomBreadCrumbButton) robot.lookup("#ProfilerInfoBox-versionItem").query())
+                        .getOnAction().handle(new ActionEvent()));
         assertEquals("ProfilerInfoBox-versionItem", infoBox.getSelectedCrumb().getValue().getId());
     }
     @TestFx

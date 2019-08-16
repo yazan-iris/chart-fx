@@ -65,7 +65,8 @@ public class RunChartSamples extends Application {
         buttons.getChildren().add(new MyButton("MetaDataRendererSample", new MetaDataRendererSample()));
         buttons.getChildren().add(new MyButton("MountainRangeRendererSample", new MountainRangeRendererSample()));
         buttons.getChildren().add(new MyButton("MultipleAxesSample", new MultipleAxesSample()));
-        buttons.getChildren().add(new MyButton("NotANumberSample", new NotANumberSample()));
+        // Disable NaN sample due to bug in JDK8
+        // buttons.getChildren().add(new MyButton("NotANumberSample", new NotANumberSample()));
         buttons.getChildren().add(new MyButton("OscilloscopeAxisSample", new OscilloscopeAxisSample()));
         buttons.getChildren().add(new MyButton("PolarPlotSample", new PolarPlotSample()));
         buttons.getChildren().add(new MyButton("RollingBufferSample", new RollingBufferSample()));

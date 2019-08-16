@@ -178,7 +178,8 @@ public final class WriteFxImage {
                 }
             }
             png.end();
-            return os.buffer().flip();
+            os.buffer().flip(); // does not return ByteBuffer in JDK8 but only Buffer
+            return os.buffer();
         } catch (IOException e) {
             LOGGER.atError().setCause(e).log("buffer couldn't be closes");
         }
@@ -296,7 +297,8 @@ public final class WriteFxImage {
             pngWriter.end();
             ArrayCache.release(INTERNAL_ARRAY_CACHE_NAME, uncompressedImageData);
             ArrayCache.release(INTERNAL_LINE_ARRAY_CACHE_NAME, lineArray);
-            return os.buffer().flip();
+            os.buffer().flip();
+            return os.buffer();
         } catch (IOException e) {
             LOGGER.atError().setCause(e).log("buffer couldn't be closed");
         }
@@ -459,8 +461,8 @@ public final class WriteFxImage {
         outputByteBuffer.putInt(0); // zero size, will later be overwritten when we know the size
         outputByteBuffer.put("IDAT".getBytes());
         compressor.finish();
-        compressor.deflate(outputByteBuffer, Deflater.FULL_FLUSH);
-        outputByteBuffer.limit(outputByteBuffer.position());
+        final int compressedBytes = compressor.deflate(outputByteBuffer.array(), outputByteBuffer.position(), outputByteBuffer.remaining(), Deflater.FULL_FLUSH);
+        outputByteBuffer.limit(outputByteBuffer.position() + compressedBytes);
         outputByteBuffer.reset();
         outputByteBuffer.putInt(compressor.getTotalOut());
         crc.reset();
