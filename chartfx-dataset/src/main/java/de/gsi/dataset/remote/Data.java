@@ -2,6 +2,7 @@ package de.gsi.dataset.remote;
 
 import java.io.Serializable;
 
+
 /**
  * Simple data storage container for net-based file/data-transfers.
  * 
@@ -19,14 +20,11 @@ public class Data implements Serializable {
     private final int dataByteArraySize;
 
     public Data(final String exportNameData, final String mimeType, final byte[] dataByteArray, final int dataByteArraySize) {
-        if (exportNameData == null || exportNameData.isBlank()) {
-            throw new IllegalArgumentException("exportNameData must not be null or blank");
+        if (exportNameData.isBlank()) {
+            throw new IllegalArgumentException("exportNameData must not be blank");
         }
-        if (mimeType == null || mimeType.isBlank()) {
-            throw new IllegalArgumentException("mimeType must not be null or blank");
-        }
-        if (dataByteArray == null) {
-            throw new IllegalArgumentException("dataByteArray must not be null");
+        if (mimeType.isBlank()) {
+            throw new IllegalArgumentException("mimeType must not be blank");
         }
         if (dataByteArray.length < dataByteArraySize) {
             throw new IllegalArgumentException("dataByteArray[" + dataByteArray.length + "] must be larger than dataByteArraySize=" + dataByteArraySize);
@@ -49,7 +47,7 @@ public class Data implements Serializable {
         return exportNameData;
     }
 
-    public String getMimeType() {
+    protected String getMimeType() {
         return mimeType;
     }
 }
